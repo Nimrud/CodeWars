@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class StringToCamelCase {
     public static void main(String[] args) {
-        System.out.println(toCamelCase("The-stealth-warrior"));
+        System.out.println(toCamelCase(""));
     }
 
     static String toCamelCase(String s){
@@ -25,6 +25,8 @@ public class StringToCamelCase {
 
         if (s == null) {
             throw new NullPointerException();
+        } else if (s.equals("")){
+            return "";
         } else {
             if (s.contains("-")){
                 words = s.split("-");
