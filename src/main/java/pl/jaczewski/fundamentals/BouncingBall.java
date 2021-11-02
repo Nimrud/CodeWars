@@ -31,15 +31,20 @@ Examples:
 
 public class BouncingBall {
     public static void main(String[] args) {
-
+        System.out.println(bouncingBall(3, 0.66, 1.5));
     }
+
     public static int bouncingBall(double h, double bounce, double window) {
-        if (h <= 0 || bounce > 1 || bounce < 0) {
-            System.out.println("Invalid parameters");
+        if (h > 0 && bounce > 0 && bounce < 1 && window < h) {
+            int count = 1;
+            if ((h * bounce) > window) {
+                while ((h * bounce) > window) {
+                    count +=2;
+                    h *= bounce;
+                }
+            }
+            return count;
         }
-
-
-        return 0;
+        return -1;
     }
-
 }
