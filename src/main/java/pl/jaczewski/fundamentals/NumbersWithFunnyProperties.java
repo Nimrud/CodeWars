@@ -28,18 +28,23 @@ import java.util.Arrays;
 
 class NumbersWithFunnyProperties {
     public static void main(String[] args) {
-        digPow(5236, 9);
+        System.out.println(digPow(46288, 3));
     }
 
     public static long digPow(int n, int p) {
         String numbers = String.valueOf(n);
         char[] digits = numbers.toCharArray();
         int sum = 0;
-        //TODO
-        for (int i = 0; i < digits.length; i++) {
 
+        for (int i = 0; i < digits.length; i++) {
+            double pow = Math.pow(Character.getNumericValue(digits[i]), (p + i));
+            sum += pow;
         }
 
+        int k = sum / n;
+        if (sum % n == 0) {
+            return k;
+        }
         return -1;
     }
 }
