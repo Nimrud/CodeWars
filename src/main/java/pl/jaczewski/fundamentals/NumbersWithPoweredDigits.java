@@ -41,17 +41,17 @@ class NumbersWithPoweredDigits {
 
         List<Long> result = new ArrayList<>();
 
-        for (int i = 0; i < input.size(); i++) {
-            String number = String.valueOf(input.get(i));
+        for (Long aLong : input) {
+            String number = String.valueOf(aLong);
             char[] digits = number.toCharArray();
 
             long digitsPoweredAndAdded = 0;
             for (int j = 0; j < digits.length; j++) {
-                digitsPoweredAndAdded += (long) Math.pow(Character.getNumericValue(digits[j]), (j+1));
+                digitsPoweredAndAdded += (long) Math.pow(Character.getNumericValue(digits[j]), (j + 1));
             }
 
-            if (input.get(i) == digitsPoweredAndAdded) {
-                result.add(input.get(i));
+            if (aLong == digitsPoweredAndAdded) {
+                result.add(aLong);
             }
         }
         return result;

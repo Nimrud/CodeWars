@@ -24,8 +24,6 @@ digPow(46288, 3) should return 51 since 4³ + 6⁴+ 2⁵ + 8⁶ + 8⁷ = 2360688
 
  */
 
-import java.util.Arrays;
-
 class NumbersWithFunnyProperties {
     public static void main(String[] args) {
         System.out.println(digPow(46288, 3));
