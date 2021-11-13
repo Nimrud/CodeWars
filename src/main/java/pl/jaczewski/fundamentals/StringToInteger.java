@@ -18,41 +18,147 @@ Additional Notes:
 
  */
 
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 
 class StringToInteger {
     public static void main(String[] args) {
-        System.out.println(parseInt("two hundred forty-six"));
-        System.out.println("-------------------");
-        System.out.println(parseInt("Seventy"));
-
-        System.out.println("==============");
-        System.out.println(hundreds("two hundred thirty seven"));
+        System.out.println(parseInt("two hundred and sixteen"));
+        System.out.println(parseInt("\tTwelve "));
+        System.out.println(parseInt("fifteen hundred"));
+        System.out.println(parseInt("Two thousand"));
+        System.out.println(parseInt("Zero"));
+        System.out.println(parseInt("One Million"));
+        System.out.println(parseInt("two hundred eighty two thousand seven hundred and thirty-seven"));
     }
 
     public static int parseInt(String numStr) {
-        String[] words = basicStringProcessing(numStr);
-        System.out.println(Arrays.toString(words));
-
-        if (numStr.contains("million")) {
+        String input = numStr.toLowerCase(Locale.ROOT);
+        if (input.contains("million")) {
             return 1000000;
-        } else if (numStr.contains("thousand")) {
-            //TODO
-            return -100;
-        } else if (numStr.contains("hundred")) {
-            //TODO
-            return -10000;
-        } else if (dozens(numStr) >= 20) {
-            return dozens(numStr);
+        } else if (input.contains("thousand")) {
+            return thousands(input);
+        } else if (input.contains("hundred")) {
+            return hundreds(input);
+        } else if (dozens(input) >= 20) {
+            return dozens(input);
         } else {
-            return numbersUnder20(numStr);
+            return numbersUnder20(input);
         }
     }
 
+    private static String[] basicStringProcessing(String numString) {
+        return numString
+                .trim()
+                .replaceAll("[ ]and", "")
+                .split("[ -]");
+    }
+
+    private static int numbersUnder20(String input) {
+        return searchMap(input.trim(), mapUnder20());
+    }
+
+    private static int dozens(String input) {
+        String[] words = basicStringProcessing(input);
+
+        if (words.length > 1) {
+            int firstDigit = searchMap(words[0], mapOfDozens());
+            int secondDigit = searchMap(words[1], mapUnder20());
+            return firstDigit + secondDigit;
+        } else {
+            return searchMap(words[0], mapOfDozens());
+        }
+    }
+
+    private static int hundreds(String input) {
+        String[] words = basicStringProcessing(input);
+
+        // getting index of the word "hundred" in String
+        int index = gettingIndexOfGivenWord(words, "hundred");
+
+        // counting hundreds
+        int hundredsValue = numbersUnder20(words[0]) * 100;
+
+        // getting a substring that represents a value < 100
+        String remainder = remainder(words, index);
+
+        // building up the final value (hundreds + remainder)
+        if (words.length - 1 > index) {
+            // if there is anything after the word "hundred"
+            if (dozens(remainder) >= 20) {
+                return hundredsValue + dozens(remainder);
+            } else {
+                return hundredsValue + numbersUnder20(remainder);
+            }
+        } else {
+            return hundredsValue;
+        }
+    }
+
+    private static int thousands(String input) {
+        String[] words = basicStringProcessing(input);
+
+        int index = gettingIndexOfGivenWord(words, "thousand");
+
+        // getting a number that is after the word "thousand"
+        int remainderValue = determineNumber(remainder(words, index));
+
+        // getting the number of thousands
+        int thousandValue = determineNumber(thousandCount(words, index));
+
+        return thousandValue * 1000 + remainderValue;
+    }
+
+    // method to determine if the number is in hundreds, dozens or is a single-digit
+    private static int determineNumber(String number) {
+        int value;
+        if (number.equals("")) {
+            value = 0;
+        } else if (number.contains("hundred")) {
+            value = hundreds(number);
+        } else if (dozens(number) >= 20) {
+            value = dozens(number);
+        } else {
+            value = numbersUnder20(number);
+        }
+        return value;
+    }
+
+    // method to return words that are AFTER the word "hundred" or "thousand"
+    private static String remainder(String[] words, int index) {
+        StringBuilder remainder = new StringBuilder();
+        for (int i = 0; i < words.length; i++) {
+            if (i > index) {
+                remainder.append(words[i]).append(" ");
+            }
+        }
+        return remainder.toString();
+    }
+
+    // method to return words that are BEFORE the word "thousand"
+    private static String thousandCount(String[] words, int index) {
+        StringBuilder thousandCount = new StringBuilder();
+        for (int i = 0; i < words.length; i++) {
+            if (i < index) {
+                thousandCount.append(words[i]).append(" ");
+            }
+        }
+        return thousandCount.toString();
+    }
+
+    private static int gettingIndexOfGivenWord(String[] words, String keyWord) {
+        int index = 0;
+        for (int i = 0; i < words.length; i++) {
+            if (words[i].equals(keyWord)) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
     private static Map<String, Integer> mapUnder20 () {
-        Map<String, Integer> map = Map.ofEntries(
+        return Map.ofEntries(
+                Map.entry("zero", 0),
                 Map.entry("one", 1),
                 Map.entry("two", 2),
                 Map.entry("three", 3),
@@ -72,11 +178,10 @@ class StringToInteger {
                 Map.entry("seventeen", 17),
                 Map.entry("eighteen", 18),
                 Map.entry("nineteen", 19));
-        return map;
     }
 
     private static Map<String, Integer> mapOfDozens() {
-        Map<String, Integer> map = Map.of(
+        return Map.of(
                 "twenty", 20,
                 "thirty", 30,
                 "forty", 40,
@@ -85,70 +190,14 @@ class StringToInteger {
                 "seventy", 70,
                 "eighty", 80,
                 "ninety", 90);
-        return map;
     }
 
-    private static int numbersUnder20(String numString) {
-        return search(numString.trim().toLowerCase(Locale.ROOT), mapUnder20());
-    }
-
-    private static int dozens(String numString) {
-        String[] words = basicStringProcessing(numString);
-
-        if (words.length > 1) {
-            int firstDigit = search(words[0], mapOfDozens());
-            int secondDigit = search(words[1], mapUnder20());
-            return firstDigit + secondDigit;
-        } else {
-            return search(words[0], mapOfDozens());
-        }
-    }
-
-    private static int hundreds(String numString) {
-        String[] words = basicStringProcessing(numString);
-
-        // getting index of the word "hundred" in String
-        int index = 0;
-        for (int i = 0; i < words.length; i++) {
-            if (words[i].equals("hundred")) {
-                index = i;
-            }
-        }
-
-        // counting hundreds
-        int hundredsValue = numbersUnder20(words[0]) * 100;
-
-        // building a String of words which are AFTER the word "hundred"
-        StringBuilder remainder = new StringBuilder();
-        for (int i = 0; i < words.length; i++) {
-            if (i > index) {
-                remainder.append(words[i]).append(" ");
-            }
-        }
-
-        // building up the final value (hundreds + remainder)
-        if (words.length - 1 > index) {
-            if (dozens(remainder.toString()) >= 20) {
-                return hundredsValue + dozens(remainder.toString());
-            } else {
-                return hundredsValue + numbersUnder20(remainder.toString());
-            }
-        } else {
-            return hundredsValue;
-        }
-    }
-
-    private static int search(String numString, Map<String, Integer> map) {
+    private static int searchMap(String numString, Map<String, Integer> map) {
         for (Map.Entry<String, Integer> entry : map.entrySet()) {
             if (numString.equals(entry.getKey())) {
                 return entry.getValue();
             }
         }
         return -1;
-    }
-
-    private static String[] basicStringProcessing(String numString) {
-        String lowerCased = numString.trim().toLowerCase(Locale.ROOT);
-        return lowerCased.split("[ -]");
     }
 }
