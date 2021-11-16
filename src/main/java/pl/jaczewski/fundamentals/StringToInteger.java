@@ -23,13 +23,9 @@ import java.util.Map;
 
 class StringToInteger {
     public static void main(String[] args) {
-        System.out.println(parseInt("two hundred and sixteen"));
-        System.out.println(parseInt("\tTwelve "));
-        System.out.println(parseInt("fifteen hundred"));
-        System.out.println(parseInt("Two thousand"));
-        System.out.println(parseInt("Zero"));
-        System.out.println(parseInt("One Million"));
-        System.out.println(parseInt("two hundred eighty two thousand seven hundred and thirty-seven"));
+        /*
+        tests to this class in appropriate folder
+         */
     }
 
     public static int parseInt(String numStr) {
