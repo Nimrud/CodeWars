@@ -52,4 +52,9 @@ class StringManipulation {
     private static String wordTransformation(String s) {
         return  s.substring(1) + s.charAt(0) + "ay";
     }
+
+    //best solution:
+    public static String pigIt2(String str) {
+        return str.replaceAll("(\\w)(\\w*)", "$2$1ay");
+    }
 }
