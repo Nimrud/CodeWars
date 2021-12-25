@@ -3,9 +3,10 @@ package pl.jaczewski.fundamentals;
 import java.util.List;
 
 /*
-Write a function that, given a string of text (possibly with punctuation and line-breaks), returns an array of the top-3 most occurring words, in descending order of the number of occurrences.
-Assumptions:
+Write a function that, given a string of text (possibly with punctuation and line-breaks),
+returns an array of the top-3 most occurring words, in descending order of the number of occurrences.
 
+Assumptions:
     A word is a string of letters (A to Z) optionally containing one or more apostrophes (') in ASCII.
     Apostrophes can appear at the start, middle or end of a word ('abc, abc', 'abc', ab'c are all valid)
     Any other characters (e.g. #, \, / , . ...) are not part of a word and should be treated as whitespace.
@@ -37,9 +38,18 @@ Bonus points (not really, but just for fun):
  */
 
 class TopWords {
+    public static void main(String[] args) {
+        String example = " Ala4 m*a k\toT_a";
+        top3(example);
+    }
 
     public static List<String> top3(String s) {
-        // Your code here
+        String clean = s.trim().replaceAll("\\d", "").toLowerCase();
+        System.out.println("clean = " + clean);
+        String[] words = clean.split(" ");
+        for (String word: words) {
+            System.out.println(word);
+        }
         return null;
     }
 }
