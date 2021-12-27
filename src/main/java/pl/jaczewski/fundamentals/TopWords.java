@@ -41,30 +41,51 @@ Bonus points (not really, but just for fun):
 
 class TopWords {
     public static void main(String[] args) {
-        String example1 = " Al'a4 m*a, k\toT_a. ala ala kota ala";
+        String example1 = " Al'a4 m*a, 'k\toT_a. ' ala ala kota ala abc%de";
         System.out.println("top3(example1) = " + top3(example1));
-        String example2 = "e e e e DDD ddd DdD: ddd ddd aa aA Aa, bb cc cC e e e";
+
+        String example2 = "e e e e DDD ddd DdD: ddd    ddd aa aA Aa, bb cc cC e e e";
         System.out.println("top3(example2) = " + top3(example2));
-        String example3 = "In a village of La Mancha, the name of which I have no desire to call to " +
-        "mind, there lived not long since one of those gentlemen that keep a lance " +
-        "in the lance-rack, an old buckler, a lean hack, and a greyhound for " +
-        "coursing. An olla of rather more beef than mutton, a salad on most " +
-        "nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra " +
-        "on Sundays, made away with three-quarters of his income.";
-        System.out.println("top3(example3) = " + top3(example3));
+
+//        String example3 = "In a village of La Mancha, the name of which I have no desire to call to " +
+//        "mind, there lived not long since one of those gentlemen that keep a lance " +
+//        "in the lance-rack, an old buckler, a lean hack, and a greyhound for " +
+//        "coursing. An olla of rather more beef than mutton, a salad on most " +
+//        "nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra " +
+//        "on Sundays, made away with three-quarters of his income.";
+//        System.out.println("top3(example3) = " + top3(example3));
+
+        String example4 = "  ...  ";
+        System.out.println("top3(example4) = " + top3(example4));
+
+        String example5 = "  ''' av'   '  '' ";
+        System.out.println("top3(example5) = " + top3(example5));
     }
 
     public static List<String> top3(String s) {
+
         String[] words = wordsCleaner(s);
-        Map<String, Integer> wordsInMap = wordCountMap(words);
+        List<String> wordsNotPureApostrophes = apostropheRemover(words);
+
+        if (wordsNotPureApostrophes.size() == 0 || wordsNotPureApostrophes.get(0).equals("")) {
+            return new ArrayList<>();
+        }
+
+        Map<String, Integer> wordsInMap = wordCountMap(wordsNotPureApostrophes);
         return sortedMapByValue(wordsInMap);
     }
 
     private static String[] wordsCleaner(String s) {
-        return s.trim().toLowerCase().replaceAll("[^a-z|^'| ]", "").split(" ");
+        return s.toLowerCase().replaceAll("[^a-z|^'| ]", " ").trim().replaceAll("\\s+", " ").split(" ");
     }
 
-    private static Map<String, Integer> wordCountMap(String[] words) {
+    private static List<String> apostropheRemover(String[] words) {
+        return Arrays.stream(words)
+                .filter(e -> !(e.matches("'+")))
+                .collect(Collectors.toList());
+    }
+
+    private static Map<String, Integer> wordCountMap(List<String> words) {
         Map<String, Integer> wordsInMap = new HashMap<>();
         for (String word: words) {
             int count = wordsInMap.containsKey(word) ? wordsInMap.get(word) + 1 : 1;
@@ -80,4 +101,5 @@ class TopWords {
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
     }
+
 }
