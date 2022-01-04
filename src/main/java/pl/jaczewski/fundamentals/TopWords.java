@@ -1,7 +1,10 @@
 package pl.jaczewski.fundamentals;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 /*
 Write a function that, given a string of text (possibly with punctuation and line-breaks),
@@ -102,4 +105,15 @@ class TopWords {
                 .collect(Collectors.toList());
     }
 
+    // for reference:
+    // code by PavelKalegin, ranked as the best by Codewars users:
+    public static List<String> top3BestPractice(String s) {
+        return Arrays.stream(s.toLowerCase().split("[^a-z*|']"))
+                .filter(o -> !o.isEmpty() && !o.replace("'","").isEmpty())
+                .collect(groupingBy(Function.identity(), Collectors.counting())).entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .map(Map.Entry::getKey)
+                .limit(3)
+                .collect(Collectors.toList());
+    }
 }
